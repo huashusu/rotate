@@ -1,3 +1,3 @@
-module github.com/Huashusu/rotate
+module github.com/huashusu/rotate
 
 go 1.18

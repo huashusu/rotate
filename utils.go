@@ -41,6 +41,49 @@ func getDirAllFiles(dir string) []string {
 	return result
 }
 
+// getEmptyDirs get all empty folders in a directory.
+func getEmptyDirs(dir string) []string {
+	var result []string
+	dirs, err := os.ReadDir(dir)
+	if err != nil {
+		panic(err)
+	}
+	for _, entry := range dirs {
+		if entry.IsDir() {
+			name := join(dir, entry.Name())
+			files, _ := os.ReadDir(name)
+			if len(files) > 0 {
+				entryDirs := getEmptyDirs(name)
+				result = append(result, entryDirs...)
+				var count int
+				for _, file := range files {
+					if file.IsDir() && hasString(entryDirs, join(name, file.Name())) {
+						count++
+					} else {
+						break
+					}
+				}
+				if count == len(files) {
+					result = append(result, name)
+				}
+			} else {
+				result = append(result, name)
+			}
+		}
+	}
+	return result
+}
+
+// hasString check if target exists in slice
+func hasString(slice []string, target string) bool {
+	for i := 0; i < len(slice); i++ {
+		if slice[i] == target {
+			return true
+		}
+	}
+	return false
+}
+
 // join path, if it is not an absolute path add './'.
 func join(elem ...string) string {
 	p := path.Join(elem...)

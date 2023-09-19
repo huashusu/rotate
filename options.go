@@ -42,6 +42,13 @@ func WithExpiredHandler(handler ExpFunc) Option {
 // WithDeleteEmptyFile whether to delete empty files
 func WithDeleteEmptyFile(flag bool) Option {
 	return func(r *Rotate) {
-		r.deleteEmptyFlag = flag
+		r.deleteEmptyFileFlag = flag
+	}
+}
+
+// WithDeleteEmptyDir whether to delete empty folders
+func WithDeleteEmptyDir(flag bool) Option {
+	return func(r *Rotate) {
+		r.deleteEmptyDirFlag = flag
 	}
 }

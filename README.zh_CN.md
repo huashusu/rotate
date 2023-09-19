@@ -13,7 +13,7 @@
 ## 安装
 
 ```shell
-go get -u github.com/Huashusu/rotate
+go get -u github.com/huashusu/rotate
 ```
 
 ## 文档
@@ -32,7 +32,7 @@ package main
 import (
 	"log"
 	"os"
-	"github.com/Huashusu/rotate"
+	"github.com/huashusu/rotate"
 	"time"
 )
 
@@ -99,6 +99,10 @@ func main() {
 ### 设置删除空文件(`WithDeleteEmptyFile`)`默认值: true`
 
 **说明:** 日志切分之后，如果上次文件大小为0，则删除
+
+### 设置删除空文件夹(`WithDeleteEmptyDir`)`默认值: true`
+
+**说明:** 删除空文件日志之后，有可能会存在空文件夹，可以使用这个方法清理空文件夹
 
 ## 常量
 

@@ -1,5 +1,10 @@
 # Change log
 
+## v0.0.2
+
+- [NEW] Add option to delete empty folders
+- [FIX] Modify the dependent username of the library to lowercase
+
 ## v0.0.1
 
 - [NEW] Rotate structure

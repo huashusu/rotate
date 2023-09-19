@@ -51,12 +51,13 @@ type Rotate struct {
 	layout string // generate filename format template
 	ext    string // file extension
 
-	rotateDur       time.Duration  // rotation interval
-	loc             *time.Location // time zone settings
-	maxAge          time.Duration  // maximum survival time
-	maxSize         int64          // file size limit
-	expiredFunc     ExpFunc        // processing of expired files
-	deleteEmptyFlag bool           // remove empty file flag
+	rotateDur           time.Duration  // rotation interval
+	loc                 *time.Location // time zone settings
+	maxAge              time.Duration  // maximum survival time
+	maxSize             int64          // file size limit
+	expiredFunc         ExpFunc        // processing of expired files
+	deleteEmptyFileFlag bool           // remove empty file flag
+	deleteEmptyDirFlag  bool           // remove empty dir flag
 
 	mutex     *sync.RWMutex // lock
 	index     int64         // rotated file index
@@ -89,13 +90,14 @@ func New(dir, layout, ext string, options ...Option) (*Rotate, error) {
 		layout: layout,
 		ext:    ext,
 
-		// optional parameters
-		rotateDur:       Day,
-		loc:             time.Local,
-		maxAge:          0,
-		maxSize:         0,
-		expiredFunc:     nil,
-		deleteEmptyFlag: true,
+		// optional parameters (defaults value)
+		rotateDur:           Day,
+		loc:                 time.Local,
+		maxAge:              0,
+		maxSize:             0,
+		expiredFunc:         nil,
+		deleteEmptyFileFlag: true,
+		deleteEmptyDirFlag:  true,
 
 		// private parameters
 		mutex:     new(sync.RWMutex),
@@ -229,7 +231,7 @@ func (r *Rotate) rotateTime(now time.Time) {
 	r.index = 1
 	r.mutex.Unlock()
 
-	if r.deleteEmptyFlag {
+	if r.deleteEmptyFileFlag {
 		filename = oldFile.Name()
 		info, err := oldFile.Stat()
 		_ = oldFile.Sync()
@@ -244,6 +246,13 @@ func (r *Rotate) rotateTime(now time.Time) {
 	} else {
 		_ = oldFile.Sync()
 		_ = oldFile.Close()
+	}
+
+	if r.deleteEmptyDirFlag {
+		emptyDirs := getEmptyDirs(r.dir)
+		for _, dir := range emptyDirs {
+			_ = os.Remove(dir)
+		}
 	}
 }
 
@@ -328,7 +337,7 @@ func (r *Rotate) expiredFileHandler() {
 	if r.expiredFunc != nil && r.maxAge > 0 {
 		exp := nowRotateTime(r.rotateDur, r.loc).Add(-r.maxAge)
 		result := r.getExpirationFiles(exp)
-		// 防止 panic
+		// prevent panic
 		defer func() {
 			if err := recover(); err != nil {
 				fmt.Printf("expired handler panic:%v", err)

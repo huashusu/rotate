@@ -8,12 +8,14 @@
 ## Preconditions
 
 - **[Go](https://go.dev/)** version >= 1.18
-> If you have tested it and can run it under a lower version, you can raise an `issue` or `pull requests` to change the docs and go.mod.
+
+> If you have tested it and can run it under a lower version, you can raise an `issue` or `pull requests` to change the
+> docs and go.mod.
 
 ## Getting rotate
 
 ```shell
-go get -u github.com/Huashusu/rotate
+go get -u github.com/huashusu/rotate
 ```
 
 ## Documentation
@@ -32,7 +34,7 @@ package main
 import (
 	"log"
 	"os"
-	"github.com/Huashusu/rotate"
+	"github.com/huashusu/rotate"
 	"time"
 )
 
@@ -60,7 +62,8 @@ func main() {
 Parameter Description:
 
 - `dir`: The root directory where log files are stored.
-- `layout`: For the time template used in the generated log, the syntax used is the `format` method of the built-in `time` package, and there should be no illegal characters in the file name. The example is as follows:
+- `layout`: For the time template used in the generated log, the syntax used is the `format` method of the
+  built-in `time` package, and there should be no illegal characters in the file name. The example is as follows:
     - No directory hierarchy exists: layout: `2006-01-02-15-04-05`
     - Separate logs by month: layout: `2006-01-02/15-04-05`
     - Sort logs by year, month and day: layout: `2006/01/02/15-04-05`
@@ -70,7 +73,8 @@ Parameter Description:
 
 ### Set split time(`WithRotationDuration`)`default: Day`
 
-**explain:** A truncating design was used for time selection. If the setting is less than one day, it is best to be divisible by 24 (hours). The case is as follows: 
+**explain:** A truncating design was used for time selection. If the setting is less than one day, it is best to be
+divisible by 24 (hours). The case is as follows:
 
 current time: `2023/09/12 15:45:40`
 
@@ -82,7 +86,8 @@ current time: `2023/09/12 15:45:40`
 
 ### Set time zone(`WithTimeZone`)`default: time.Local`
 
-**explain:** The time template does not need to carry the time zone flag, and is set separately through the time zone, which is used to truncate the time and parse the time from the file name.
+**explain:** The time template does not need to carry the time zone flag, and is set separately through the time zone,
+which is used to truncate the time and parse the time from the file name.
 
 ### Set expiration time(`WithMaxAge`)`default: 0`
 
@@ -94,11 +99,17 @@ current time: `2023/09/12 15:45:40`
 
 ### Set expiration handler(`WithExpiredHandler`)`default: nil`
 
-**explain:** Usually used together with the expiration time, the path of the expired file is passed in, for example: compressing the expired file, reading the file and sending it, deleting the file, etc.
+**explain:** Usually used together with the expiration time, the path of the expired file is passed in, for example:
+compressing the expired file, reading the file and sending it, deleting the file, etc.
 
 ### Set delete empty files(`WithDeleteEmptyFile`)`default: true`
 
 **explain:** After the log is split, if the last file size is 0, delete it.
+
+### Set delete empty directory(`WithDeleteEmptyDir`)`default: true`
+
+**explain:** After deleting empty file logs, there may be empty folders. You can use this method to clean up empty
+folders.
 
 ## Const
 
@@ -120,6 +131,7 @@ current time: `2023/09/12 15:45:40`
 
 ## Static Method
 
-`SetSymbol`: Set the left and right wrapping symbols of the serial number in the file, default value:`Left`=`[` `Right`=`]`
+`SetSymbol`: Set the left and right wrapping symbols of the serial number in the file, default
+value:`Left`=`[` `Right`=`]`
 
 `SetPerm`: Set the permission mode for creating folders and files, default value: `0644`
